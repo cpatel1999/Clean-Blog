@@ -1,5 +1,5 @@
 {
-  "name": "node-js-blog",
+  "name": "js-blog",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,5 +14,13 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cpatel1999/Clean-Blog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cpatel1999/Clean-Blog/issues"
+  },
+  "homepage": "https://github.com/cpatel1999/Clean-Blog#readme"
 }
