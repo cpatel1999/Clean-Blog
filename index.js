@@ -11,18 +11,26 @@ app.set('views', `${__dirname}/views`);
 
 app.get("/", (request, response) => {
     response.sendFile(path.resolve(__dirname, 'pages/index.html'))
+    //If we use templating engine then render is used to render the template, instead of sendFile.
+    // response.render('index')
 })
 
 app.get("/about", (request, response) => {
     response.sendFile(path.resolve(__dirname, 'pages/about.html'))
+    //If we use templating engine then render is used to render the template, instead of sendFile.
+    // response.render('about')
 })
 
 app.get("/contact", (request, response) => {
     response.sendFile(path.resolve(__dirname, 'pages/contact.html'))
+    //If we use templating engine then render is used to render the template, instead of sendFile.
+    // response.render('contact')
 })
 
 app.get("/post", (request, response) => {
     response.sendFile(path.resolve(__dirname, 'pages/post.html'))
+    //If we use templating engine then render is used to render the template, instead of sendFile.
+    // response.render('post')
 })
 
 app.listen(4000, () => {
