@@ -1,13 +1,15 @@
 const path = require('path')
+const expressEdge = require('express-edge')
 const express = require('express')
-const { request } = require('http')
-const { response } = require('express')
-
 const app = new express()
 
-app.use(express.static('public'))
+// const {config, expressEdge} = require('express-edge')
 
-app.get("/", (requst, response) => {
+app.use(express.static('public'))
+// app.use(expressEdge)
+app.set('views', `${__dirname}/views`);
+
+app.get("/", (request, response) => {
     response.sendFile(path.resolve(__dirname, 'pages/index.html'))
 })
 
