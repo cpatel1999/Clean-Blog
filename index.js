@@ -1,9 +1,18 @@
 const path = require('path')
+
+//Express-edge package is needed to use templating engine in the application
 const expressEdge = require('express-edge')
+
 const express = require('express')
+const mongoose = require('mongoose')
+
+
+//Starts server
 const app = new express()
 
-// const {config, expressEdge} = require('express-edge')
+//Establishes connection with mongodb
+mongoose.connect('mongodb://localhost/CLEAN-BLOG')
+
 
 app.use(express.static('public'))
 // app.use(expressEdge)
