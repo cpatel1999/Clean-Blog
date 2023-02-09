@@ -24,6 +24,10 @@ app.get("/", (request, response) => {
     // response.render('index')
 })
 
+app.get('/posts/new', (request, response) => {
+    response.sendFile(path.resolve(__dirname, 'pages/create.html'))
+})
+
 app.get("/about", (request, response) => {
     response.sendFile(path.resolve(__dirname, 'pages/about.html'))
     //If we use templating engine then render is used to render the template, instead of sendFile.
