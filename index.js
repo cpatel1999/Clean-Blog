@@ -5,6 +5,9 @@ const expressEdge = require('express-edge')
 
 const express = require('express')
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+
+const Post = require("./Database/models/Post")
 
 
 //Starts server
@@ -14,36 +17,56 @@ const app = new express()
 mongoose.connect('mongodb://localhost/CLEAN-BLOG')
 
 
+
 app.use(express.static('public'))
-// app.use(expressEdge)
+
+
+app.use(expressEdge)
 app.set('views', `${__dirname}/views`);
 
+
+//Used to send deata from form to database
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+
 app.get("/", (request, response) => {
-    response.sendFile(path.resolve(__dirname, 'pages/index.html'))
-    //If we use templating engine then render is used to render the template, instead of sendFile.
-    // response.render('index')
+    // response.sendFile(path.resolve(__dirname, 'pages/index.html'))
+    
+    // If we use templating engine then render is used to render the template, instead of sendFile.
+    response.render('index')
 })
 
 app.get('/posts/new', (request, response) => {
-    response.sendFile(path.resolve(__dirname, 'pages/create.html'))
+    // response.sendFile(path.resolve(__dirname, 'pages/create.html'))
+    response.render('create')
+})
+
+app.post('/posts/store', (request, response) => {
+    Post.create(request.body, (error, post) => {
+        response.redirect('/')
+    })
 })
 
 app.get("/about", (request, response) => {
-    response.sendFile(path.resolve(__dirname, 'pages/about.html'))
+    // response.sendFile(path.resolve(__dirname, 'pages/about.html'))
+    
     //If we use templating engine then render is used to render the template, instead of sendFile.
-    // response.render('about')
+    response.render('about')
 })
 
 app.get("/contact", (request, response) => {
-    response.sendFile(path.resolve(__dirname, 'pages/contact.html'))
+    // response.sendFile(path.resolve(__dirname, 'pages/contact.html'))
+    
     //If we use templating engine then render is used to render the template, instead of sendFile.
-    // response.render('contact')
+    response.render('contact')
 })
 
 app.get("/post", (request, response) => {
-    response.sendFile(path.resolve(__dirname, 'pages/post.html'))
+    // response.sendFile(path.resolve(__dirname, 'pages/post.html'))
+    
     //If we use templating engine then render is used to render the template, instead of sendFile.
-    // response.render('post')
+    response.render('post')
 })
 
 app.listen(4000, () => {
