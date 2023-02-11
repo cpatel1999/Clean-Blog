@@ -30,22 +30,23 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
-app.get("/", (request, response) => {
+
+//-----------------------------------Get Requests------------------------------
+
+app.get("/", async (request, response) => {
+
+    const posts = await Post.find({})
     // response.sendFile(path.resolve(__dirname, 'pages/index.html'))
-    
+    console.log(posts)
     // If we use templating engine then render is used to render the template, instead of sendFile.
-    response.render('index')
+    response.render('index', {
+        posts : posts
+    })
 })
 
 app.get('/posts/new', (request, response) => {
     // response.sendFile(path.resolve(__dirname, 'pages/create.html'))
     response.render('create')
-})
-
-app.post('/posts/store', (request, response) => {
-    Post.create(request.body, (error, post) => {
-        response.redirect('/')
-    })
 })
 
 app.get("/about", (request, response) => {
@@ -68,6 +69,19 @@ app.get("/post", (request, response) => {
     //If we use templating engine then render is used to render the template, instead of sendFile.
     response.render('post')
 })
+
+
+
+//------------------------Post Requsts-------------------------------
+
+app.post('/posts/store', (request, response) => {
+    Post.create(request.body, (error, post) => {
+        response.redirect('/')
+    })
+})
+
+
+
 
 app.listen(4000, () => {
     console.log('App is listening on port 4000.')
