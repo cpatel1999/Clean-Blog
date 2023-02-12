@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
 const expressSession = require('express-session')
 const connectMongo = require('connect-mongo')
+const connectFlash = require('connect-flash')
 
 const Post = require("./Database/models/Post")
 
@@ -55,15 +56,18 @@ app.use(expressSession({
     })
 }))
 
+app.use(connectFlash())
+
 
 const storePostMiddleware = require('./middleware/storePost')
+const authMiddleware = require('./middleware/auth')
 
-app.use('/posts/store', storePostMiddleware)
-
+// app.use('/posts/store', storePostMiddleware)
+// app.use('/posts/new', authMiddleware)
 //-----------------------------------Get Requests------------------------------
 
 app.get("/", homePageController)
-app.get('/posts/new', createPostController)
+app.get('/posts/new', authMiddleware, createPostController)
 app.get("/post/:id", getPostController)
 app.get('/auth/register', createUserController)
 app.get('/auth/login', loginController)
@@ -84,7 +88,7 @@ app.get("/contact", (request, response) => {
 
 //------------------------Post Requsts-------------------------------
 
-app.post('/posts/store', storePostController)
+app.post('/posts/store', authMiddleware, storePostMiddleware, storePostController)
 app.post('/users/register', storeUserController)
 app.post('/users/login', loggedInUserController)
 
