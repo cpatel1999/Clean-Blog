@@ -19,6 +19,8 @@ const storePostController = require('./controllers/storePost')
 const getPostController = require('./controllers/getPost')
 const createUserController = require('./controllers/createUser')
 const storeUserController = require('./controllers/storeUser')
+const loginController = require('./controllers/login')
+const loggedInUserController = require('./controllers/loggedInUser')
 
 //Starts server
 const app = new express()
@@ -44,6 +46,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 const storePostMiddleware = require('./middleware/storePost')
+const loggedInUser = require('./controllers/loggedInUser')
 
 app.use('/posts/store', storePostMiddleware)
 
@@ -53,6 +56,7 @@ app.get("/", homePageController)
 app.get('/posts/new', createPostController)
 app.get("/post/:id", getPostController)
 app.get('/auth/register', createUserController)
+app.get('/auth/login', loginController)
 
 app.get("/about", (request, response) => {
     // response.sendFile(path.resolve(__dirname, 'pages/about.html'))
@@ -72,7 +76,7 @@ app.get("/contact", (request, response) => {
 
 app.post('/posts/store', storePostController)
 app.post('/users/register', storeUserController)
-
+app.post('/users/login', loggedInUserController)
 
 
 app.listen(4000, () => {
