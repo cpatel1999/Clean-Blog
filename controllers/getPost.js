@@ -5,9 +5,9 @@ module.exports = async (request, response) => {
     
     console.log(request.params) // Returns the object of parameters passed in the URL
 
-    const post = await Post.findById(request.params.id)
+    const post = await Post.findById(request.params.id).populate('author')
 
-    console.log(post)
+    // console.log(post)
     //If we use templating engine then render is used to render the template, instead of sendFile.
     response.render('post', {
         post : post

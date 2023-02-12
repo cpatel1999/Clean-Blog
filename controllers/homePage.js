@@ -1,7 +1,9 @@
 const Post = require('../Database/models/Post')
 
 module.exports = async (request, response) => {
-    const posts = await Post.find({})
+    const posts = await Post.find({}).populate('author')
+
+    console.log(posts)
 
     console.log(request.session)
 

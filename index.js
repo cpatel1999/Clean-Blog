@@ -74,7 +74,7 @@ app.get('/posts/new', authMiddleware, createPostController)
 app.get("/post/:id", getPostController)
 app.get('/auth/register', redirectIfAuthenticatedMiddleware, createUserController)
 app.get('/auth/login', redirectIfAuthenticatedMiddleware, loginController)
-app.get('/auth/logout', redirectIfAuthenticatedMiddleware, logoutController)
+app.get('/auth/logout', authMiddleware, logoutController)
 
 app.get("/about", (request, response) => {
     // response.sendFile(path.resolve(__dirname, 'pages/about.html'))
@@ -96,6 +96,10 @@ app.post('/posts/store', authMiddleware, storePostMiddleware, storePostControlle
 app.post('/users/register', redirectIfAuthenticatedMiddleware, storeUserController)
 app.post('/users/login', redirectIfAuthenticatedMiddleware, loggedInUserController)
 
+//Renders "not-found" template if non of the above mentioned routes are matching with the request.
+app.use((request, response) => {
+    response.render('not-found')
+})
 
 app.listen(4000, () => {
     console.log('App is listening on port 4000.')
