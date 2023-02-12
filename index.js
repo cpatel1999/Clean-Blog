@@ -6,6 +6,8 @@ const expressEdge = require('express-edge')
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
+
 
 const Post = require("./Database/models/Post")
 
@@ -16,6 +18,8 @@ const app = new express()
 //Establishes connection with mongodb
 mongoose.connect('mongodb://localhost/CLEAN-BLOG')
 
+
+app.use(fileUpload())
 
 
 app.use(express.static('public'))
@@ -31,13 +35,20 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 
+const customMiddleware = (request, response, next) => {
+    console.log('I HAVE BEEN CALLED')
+    next()
+}
+
+app.use(customMiddleware)
+
 //-----------------------------------Get Requests------------------------------
 
 app.get("/", async (request, response) => {
 
     const posts = await Post.find({})
     // response.sendFile(path.resolve(__dirname, 'pages/index.html'))
-    console.log(posts)
+    // console.log(posts)
     // If we use templating engine then render is used to render the template, instead of sendFile.
     response.render('index', {
         posts : posts
@@ -82,9 +93,18 @@ app.get("/post/:id", async (request, response) => {
 //------------------------Post Requsts-------------------------------
 
 app.post('/posts/store', (request, response) => {
-    Post.create(request.body, (error, post) => {
-        response.redirect('/')
+    console.log(request.files)
+    const { image } = request.files
+
+    image.mv(path.resolve(__dirname, 'public/posts', image.name), (error) => {
+        Post.create({
+            ...request.body,
+            image: `/posts/${image.name}`
+        }, (error, post) => {
+            response.redirect('/')
+        })
     })
+    
 })
 
 
