@@ -10,10 +10,7 @@ const fileUpload = require('express-fileupload')
 const expressSession = require('express-session')
 const connectMongo = require('connect-mongo')
 const connectFlash = require('connect-flash')
-
-const Post = require("./Database/models/Post")
-
-
+const edge = require('edge.js')
 
 const createPostController = require('./controllers/createPost')
 const homePageController = require('./controllers/homePage')
@@ -23,6 +20,7 @@ const createUserController = require('./controllers/createUser')
 const storeUserController = require('./controllers/storeUser')
 const loginController = require('./controllers/login')
 const loggedInUserController = require('./controllers/loggedInUser')
+const logoutController = require('./controllers/logout')
 
 //Starts server
 const app = new express()
@@ -30,24 +28,20 @@ const app = new express()
 //Establishes connection with mongodb
 mongoose.connect('mongodb://localhost/CLEAN-BLOG')
 
-
 app.use(fileUpload())
 
-
+//Registers the static public library folder
+//It is used to load the assets
 app.use(express.static('public'))
 
-
+//Used for templating engine
 app.use(expressEdge)
 app.set('views', `${__dirname}/views`);
 
-
-//Used to send deata from form to database
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(connectFlash())
 
 //This package is used to store session info in the MongoDB database
 const mongoStore = connectMongo(expressSession)
-
 
 app.use(expressSession({
     secret: 'secret',
@@ -56,11 +50,20 @@ app.use(expressSession({
     })
 }))
 
-app.use(connectFlash())
+
+//Used to send data from form to database
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 
 
 const storePostMiddleware = require('./middleware/storePost')
 const authMiddleware = require('./middleware/auth')
+const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticated')
+const availableGloballyMiddleware = require('./middleware/availableGlobally')
+
+// Used to make userId stored in the session available globally.
+app.use('*', availableGloballyMiddleware)
 
 // app.use('/posts/store', storePostMiddleware)
 // app.use('/posts/new', authMiddleware)
@@ -69,8 +72,9 @@ const authMiddleware = require('./middleware/auth')
 app.get("/", homePageController)
 app.get('/posts/new', authMiddleware, createPostController)
 app.get("/post/:id", getPostController)
-app.get('/auth/register', createUserController)
-app.get('/auth/login', loginController)
+app.get('/auth/register', redirectIfAuthenticatedMiddleware, createUserController)
+app.get('/auth/login', redirectIfAuthenticatedMiddleware, loginController)
+app.get('/auth/logout', redirectIfAuthenticatedMiddleware, logoutController)
 
 app.get("/about", (request, response) => {
     // response.sendFile(path.resolve(__dirname, 'pages/about.html'))
@@ -89,8 +93,8 @@ app.get("/contact", (request, response) => {
 //------------------------Post Requsts-------------------------------
 
 app.post('/posts/store', authMiddleware, storePostMiddleware, storePostController)
-app.post('/users/register', storeUserController)
-app.post('/users/login', loggedInUserController)
+app.post('/users/register', redirectIfAuthenticatedMiddleware, storeUserController)
+app.post('/users/login', redirectIfAuthenticatedMiddleware, loggedInUserController)
 
 
 app.listen(4000, () => {
