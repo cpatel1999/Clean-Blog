@@ -12,6 +12,12 @@ const fileUpload = require('express-fileupload')
 const Post = require("./Database/models/Post")
 
 
+
+const createPostController = require('./controllers/createPost')
+const homePageController = require('./controllers/homePage')
+const storePostController = require('./controllers/storePost')
+const getPostController = require('./controllers/getPost')
+
 //Starts server
 const app = new express()
 
@@ -35,30 +41,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 
-const customMiddleware = (request, response, next) => {
-    console.log('I HAVE BEEN CALLED')
-    next()
-}
+const storePostMiddleware = require('./middleware/storePost')
 
-app.use(customMiddleware)
+app.use('/posts/store', storePostMiddleware)
 
 //-----------------------------------Get Requests------------------------------
 
-app.get("/", async (request, response) => {
-
-    const posts = await Post.find({})
-    // response.sendFile(path.resolve(__dirname, 'pages/index.html'))
-    // console.log(posts)
-    // If we use templating engine then render is used to render the template, instead of sendFile.
-    response.render('index', {
-        posts : posts
-    })
-})
-
-app.get('/posts/new', (request, response) => {
-    // response.sendFile(path.resolve(__dirname, 'pages/create.html'))
-    response.render('create')
-})
+app.get("/", homePageController)
+app.get('/posts/new', createPostController)
+app.get("/post/:id", getPostController)
 
 app.get("/about", (request, response) => {
     // response.sendFile(path.resolve(__dirname, 'pages/about.html'))
@@ -74,38 +65,9 @@ app.get("/contact", (request, response) => {
     response.render('contact')
 })
 
-app.get("/post/:id", async (request, response) => {
-    // response.sendFile(path.resolve(__dirname, 'pages/post.html'))
-    
-    console.log(request.params) // Returns the object of parameters passed in the URL
-
-    const post = await Post.findById(request.params.id)
-
-    console.log(post)
-    //If we use templating engine then render is used to render the template, instead of sendFile.
-    response.render('post', {
-        post : post
-    })
-})
-
-
-
 //------------------------Post Requsts-------------------------------
 
-app.post('/posts/store', (request, response) => {
-    console.log(request.files)
-    const { image } = request.files
-
-    image.mv(path.resolve(__dirname, 'public/posts', image.name), (error) => {
-        Post.create({
-            ...request.body,
-            image: `/posts/${image.name}`
-        }, (error, post) => {
-            response.redirect('/')
-        })
-    })
-    
-})
+app.post('/posts/store', storePostController)
 
 
 
