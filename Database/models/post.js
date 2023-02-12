@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 //Schema is similar to tables in SQL databases.
 const PostSchema = new mongoose.Schema({
     title: String,
-    description: String,
+    subtitle: String,
     content: String,
     username: String,
     createdAt: {
