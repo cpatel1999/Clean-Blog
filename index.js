@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const path = require('path')
 
 //Express-edge package is needed to use templating engine in the application
@@ -26,7 +28,7 @@ const logoutController = require('./controllers/logout')
 const app = new express()
 
 //Establishes connection with mongodb
-mongoose.connect('mongodb://localhost/CLEAN-BLOG')
+mongoose.connect(process.env.DB_URI)
 
 app.use(fileUpload())
 
@@ -44,7 +46,7 @@ app.use(connectFlash())
 const mongoStore = connectMongo(expressSession)
 
 app.use(expressSession({
-    secret: 'secret',
+    secret: process.env.EXPRESS_SESSION_KEY,
     store: new mongoStore({
         mongooseConnection: mongoose.connection
     })
@@ -101,6 +103,6 @@ app.use((request, response) => {
     response.render('not-found')
 })
 
-app.listen(4000, () => {
-    console.log('App is listening on port 4000.')
+app.listen(process.env.PORT, () => {
+    console.log(`App is listening on port ${process.env.PORT}`)
 })
