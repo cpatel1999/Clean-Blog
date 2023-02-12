@@ -17,6 +17,8 @@ const createPostController = require('./controllers/createPost')
 const homePageController = require('./controllers/homePage')
 const storePostController = require('./controllers/storePost')
 const getPostController = require('./controllers/getPost')
+const createUserController = require('./controllers/createUser')
+const storeUserController = require('./controllers/storeUser')
 
 //Starts server
 const app = new express()
@@ -50,6 +52,7 @@ app.use('/posts/store', storePostMiddleware)
 app.get("/", homePageController)
 app.get('/posts/new', createPostController)
 app.get("/post/:id", getPostController)
+app.get('/auth/register', createUserController)
 
 app.get("/about", (request, response) => {
     // response.sendFile(path.resolve(__dirname, 'pages/about.html'))
@@ -68,7 +71,7 @@ app.get("/contact", (request, response) => {
 //------------------------Post Requsts-------------------------------
 
 app.post('/posts/store', storePostController)
-
+app.post('/users/register', storeUserController)
 
 
 
