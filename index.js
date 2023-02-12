@@ -7,7 +7,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
-
+const expressSession = require('express-session')
+const connectMongo = require('connect-mongo')
 
 const Post = require("./Database/models/Post")
 
@@ -43,10 +44,19 @@ app.set('views', `${__dirname}/views`);
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+//This package is used to store session info in the MongoDB database
+const mongoStore = connectMongo(expressSession)
+
+
+app.use(expressSession({
+    secret: 'secret',
+    store: new mongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}))
 
 
 const storePostMiddleware = require('./middleware/storePost')
-const loggedInUser = require('./controllers/loggedInUser')
 
 app.use('/posts/store', storePostMiddleware)
 
