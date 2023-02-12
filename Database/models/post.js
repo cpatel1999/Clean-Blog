@@ -7,7 +7,12 @@ const mongoose = require('mongoose')
 const PostSchema = new mongoose.Schema({
     title: String,
     description: String,
-    content: String
+    content: String,
+    username: String,
+    createdAt: {
+        type: Date,
+        default: new Date()
+    }
 })
 
 //Define the schema name and bind it with the structure
